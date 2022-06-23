@@ -4,21 +4,21 @@ import java.util.ArrayList;
 import java.util.Scanner;
 
 public class QuanLyKhachSan {
-        static Room A = new Room("A", 500);
-        static Room B = new Room("B", 300);
-        static Room C = new Room("C", 100);
+         Room A = new Room("A", 500);
+         Room B = new Room("B", 300);
+         Room C = new Room("C", 100);
 
-        static ArrayList<QuanLyPhong> quanly = new ArrayList<>();
+        ArrayList<QuanLyPhong> quanly = new ArrayList<>();
 
-        public static boolean checkCardID(String cmt){
-                for (QuanLyPhong q: quanly ) {
-                        if(q.getPerson().getCardID().equals(cmt)){
-                                return false;
+        public int checkCardID(String cmt){
+                for (int i = 0; i< quanly.size(); i++ ) {
+                        if(quanly.get(i).getPerson().getCardID().equals(cmt)){
+                                return i;
                         }
                 }
-                return true;
+                return -1;
         }
-        public static Person createPerson(Scanner scanner){
+        public Person createPerson(Scanner scanner){
                 System.out.println("Nhập tên người thuê: ");
                 String name = scanner.nextLine();
                 System.out.println("Nhập tuổi: ");
@@ -27,8 +27,8 @@ public class QuanLyKhachSan {
                 scanner.nextLine();
                 String cmt = scanner.nextLine();
                 while (true){
-                        boolean check = checkCardID(cmt);
-                        if(!check){
+                        int check = checkCardID(cmt);
+                        if(check != -1){
                                 System.out.println("CMT đã tồn tại! Yêu cầu nhập lại");
                                 cmt = scanner.nextLine();
                         }
@@ -41,7 +41,7 @@ public class QuanLyKhachSan {
                 return person;
         }
 
-        public static void thuePhong(Scanner scanner){
+        public boolean thuePhong(Scanner scanner){
                 Person person = createPerson(scanner);
                 System.out.println("Nhập số ngày thuê: ");
                 int soNgayThue = scanner.nextInt();
@@ -59,33 +59,41 @@ public class QuanLyKhachSan {
                         quanLyPhong = new QuanLyPhong(soNgayThue, C, person);
                 }
                 quanly.add(quanLyPhong);
+                return true;
         }
-        public static void hienThi(){
+        public void hienThi(){
                 for (QuanLyPhong q: quanly) {
                         System.out.println(q);
                 }
 
         }
 
-        public static void xoaNguoiThue(Scanner scanner){
+        public boolean xoaNguoiThue(Scanner scanner){
 
                 System.out.println("Nhập cmt của người thuê phòng: ");
                 String cmt = scanner.nextLine();
-                if(!checkCardID(cmt)){
-                        System.out.println("Xóa người này");
+                int index = checkCardID(cmt);
+                if(index == -1){
+                         System.out.println("Không tồn tại người có cmt là "+ cmt);
+                         return false;
                 }
                 else {
-                        System.out.println("Không tồn tại người có cmt là "+ cmt);
+                       quanly.remove(index);
                 }
+                return true;
         }
-        public static void thanhToan(Scanner scanner){
+        public void thanhToan(Scanner scanner){
                 System.out.println("Nhap cmt cua nguoi can than toan ");
                 String cmt = scanner.nextLine();
-                if(!checkCardID(cmt)){
-                        System.out.println("Thanh nguoi này");
+                int index = checkCardID(cmt);
+                if(index == -1){
+                          System.out.println("Khong  ton tai nguoi co cmt la "+ cmt);
                 }
                 else {
-                        System.out.println("Khong  ton tai nguoi co cmt la "+ cmt);
+                      int soNgayThue =  quanly.get(index).getSoNgayThue();
+                      int giaTien = quanly.get(index).getRoom().getPrice();
+                      int money = soNgayThue * giaTien;
+                      System.out.println("Tổng tiền là: " + money);
                 }
         }
 
